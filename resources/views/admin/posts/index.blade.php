@@ -1,41 +1,46 @@
 @extends('layouts.app')
 
-
 @section('content')
 <div class="container">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Title</th>
-                <th scope="col">Slug</th>
-                <th scope="col">Content</th>
-                <th scope="col">Published</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($posts as $post)
-            <tr>
-                <th scope="row">{{$post->id}}</th>
-                <td>{{$post->title}}</td>
-                <td>{{$post->slug}}</td>
-                <td class="text-truncate" style="max-width: 150px;">{{$post->content}}</td>
-                <td>{{$post->published ? "Pubblicato &check;" : "Non Pubblicato &cross;"}}</td>
-                <td>
-                    <a class="btn btn-primary" href="{{route('admin.posts.show', $post)}}">Visualizza</a>
-                    <a class="btn btn-warning" href="{{route('admin.posts.edit', $post)}}">Modifica</a>
-                    <form class="d-inline-block" action="{{route('admin.posts.destroy', $post)}}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Elimina</button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
+    <div class="py-4">
+        <a class="btn btn-primary"href="{{route('admin.posts.create')}}">Add Post</a>
+    </div>
 
-        </tbody>
-    </table>
 
+    <div class="d-flex p-3 bg-dark text-white" >
+        <div class="col-1">Id</div>
+        <div class="col-2">Titolo</div>
+        <div class="col-2">Slug</div>
+        <div class="col-4">Riassunto</div>
+        <div class="col-1">Stato</div>
+        <div class="col-2">azioni</div>
+    </div>
+        @foreach ($posts as $idx => $post )
+        <div class="d-flex p-3 
+        @if ($idx%2==0)
+            bg-light text-dark
+        @endif">
+            <div class="col-1 d-flex align-items-center">{{$post->id}}</div>
+            <div class="col-2">{{$post->title}}</div>
+            <div class="col-2">{{$post->slug}}</div>
+            <div class="col-4 text-truncate d-flex align-items-center">{{$post->content}}</div>
+            <div class="col-1 d-flex align-items-center">
+                @if ($post->is_public)
+                    <span class="badge badge-pill badge-success">PUBBLICO</span>
+                @else
+                    <span class="badge badge-pill badge-secondary">PRIVATO</span>
+                @endif
+            </div>
+            <div class="col-2 d-flex justify-content-center align-items-center">
+                <a href="{{route('admin.posts.show', $post->slug)}}" class="btn btn-primary mx-2 "><i class="fa-solid fa-magnifying-glass"></i></a>
+                <a href="{{route('admin.posts.edit', $post->slug)}}" class="btn btn-warning "><i class="fa-solid fa-pen"></i></a>
+                <form action="{{route('admin.posts.destroy', $post->slug )}}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger mx-2"><i class="fa-regular fa-trash-can"></i></button>
+                </form> 
+            </div>
+        </div>
+        @endforeach
 </div>
 @endsection
