@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Post;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use App\Post;
+use App\Category;
 
-
-class PostsController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +16,7 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts= Post::all();
         return view('admin.posts.index', compact('posts'));
     }
 
@@ -28,7 +27,8 @@ class PostsController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.create');
+        $categories = Category::all();
+        return view('admin.posts.create', compact('categories'));
     }
 
     /**
@@ -39,22 +39,18 @@ class PostsController extends Controller
      */
     public function store(Request $request)
     {
-        //validate
+        //validazione
         $request->validate([
-            "title" => "string|required|max:255",
-            "content" => "string|required|max:65535",
-            "published" => "sometimes|accepted"
+            'title' => 'required|max:255',
+            'content' => 'required|max:65535',
+            'is_public' => 'sometimes|accepted',
+            'category_id' => 'nullable|exists:categories,id'
         ]);
-        //store
-        $data = $request->all();
-        $newPost = new Post();
-        $newPost->title = $data['title'];
-        $newPost->content = $data['content'];
-        $newPost->published = isset($data['published']);
-        $newPost->slug = Str::of($data['title'])->slug('-');
-        $newPost->save();
-        return redirect()->route('admin.posts.show', $newPost->id);
-        
+
+        $newPost = $request->all();
+        $newPost['is_public'] = isset($newPost['is_public']);
+        Post::create($newPost);
+        return redirect()->route('admin.posts.index');
     }
 
     /**
@@ -65,8 +61,7 @@ class PostsController extends Controller
      */
     public function show(Post $post)
     {
-
-        return view('admin.posts.show ', compact('post'));
+        return view('admin.posts.show', compact('post'));
     }
 
     /**
@@ -77,7 +72,8 @@ class PostsController extends Controller
      */
     public function edit(Post $post)
     {
-        return view('admin.posts.edit' , compact('post'));
+        $categories = Category::all();
+        return view('admin.posts.edit', compact('post', 'categories'));
     }
 
     /**
@@ -89,21 +85,18 @@ class PostsController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //validate
         $request->validate([
-            "title" => "string|required|max:255",
-            "content" => "string|required|max:65535",
-            "published" => "sometimes|accepted"
+            'title' => 'required|max:255',
+            'content' => 'required|max:65535',
+            'is_public' => 'sometimes|accepted',
+            'category_id' => 'nullable|exists:categories,id'
         ]);
 
-        $data = $request->all();
-        $post->title = $data['title'];
-        $post->content = $data['content'];
-        $post->published = isset($data['published']);
-        $post->slug = Str::of($data['title'])->slug('-');
-        $post->save();
-        return redirect()->route('admin.posts.show', $post->id);
-        
+        $newPost = $request->all();
+        $newPost['is_public'] = isset($newPost['is_public']);
+        $post->update($newPost);
+
+        return redirect()->route('admin.posts.show', $post->slug);
     }
 
     /**

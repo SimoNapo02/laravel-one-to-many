@@ -9,7 +9,7 @@
 
 
     <div class="d-flex p-3 bg-dark text-white" >
-        <div class="col-1">Id</div>
+        <div class="col-1">N* Post</div>
         <div class="col">Name</div>
         <div class="col-2">Slug</div>
         <div class="col-2">Azioni</div>
@@ -19,7 +19,7 @@
         @if ($idx%2==0)
             bg-light text-dark
         @endif">
-            <div class="col-1 d-flex align-items-center">{{$category->id}}</div>
+            <div class="col-1 d-flex align-items-center">{{count($category->posts)}}</div>
             <div class="col">{{$category->name}}</div>
             <div class="col-2">{{$category->slug}}</div>
             <div class="col-2 d-flex justify-content-center align-items-center">

@@ -6,32 +6,22 @@
             <div class="card w-100">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <div>
-                       Crea Post
+                      Modifica {{$category->name}}
                     </div>
                 </div>
 
                 <div class="card-body">
-                    <form action="{{route('admin.posts.store')}}" method="POST">
+                    <form action="{{route('admin.category.update', $category->slug)}}" method="POST">
                         @csrf
+                        @method('PUT')
                         <div class="form-group">
-                          <label for="form-title">Titolo del Post</label>
-                          <input type="text" class="form-control @error('title') is-invalid @enderror" id="form-title" name="title"  value="{{ old('title', $post->title) }}">
-                          @error('title')
+                          <label for="form-name">Nome Categoria</label>
+                          <input type="text" class="form-control @error('name') is-invalid @enderror" id="form-name" name="name" value="{{old('name', $category->name)}}">
+                          @error('name')
                           <small class="form-text text-muted alert alert-danger">{{ $message }}</small>
                           @enderror
                         </div>
-                        <div class="form-group">
-                            <label for="form-content">Contento</label>
-                            <textarea class="form-control @error('content') is-invalid @enderror" id="form-content" name="content" rows="20"> {{ old('content', $post->content) }} </textarea>                 
-                            @error('content')
-                            <small class="form-text text-muted alert alert-danger">{{ $message }}</small>
-                            @enderror          
-                        </div>
-                        <div class="form-group form-check">
-                          <input type="checkbox" class="form-check-input" id="form-public-post" name="is_public" {{ old('is_public', $post->is_public) ? 'checked' : ''}}>
-                          <label class="form-check-label" for="form-public-post">Pubblica</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Crea</button>
+                        <button type="submit" class="btn btn-primary">Modifica</button>
                       </form>                 
                 </div>
             </div>

@@ -38,7 +38,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|max:100',
+            'name' => 'required|max:100|unique:categories,name',
         ]);
 
         $newCategory = $request->all();
@@ -52,9 +52,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $category)
     {
-        //
+        return view('admin.category.show',compact('category'));
     }
 
     /**
@@ -63,9 +63,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
-        //
+        return view('admin.category.edit',compact('category'));
     }
 
     /**
@@ -75,9 +75,15 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'name' => "required|max:100|unique:categories,name,{$category->id}",
+        ]);
+
+        $newCategory = $request->all();
+        $category->update($newCategory);
+        return redirect()->route('admin.category.index');
     }
 
     /**
@@ -86,8 +92,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return redirect()-route('admin.category.index');
     }
 }
