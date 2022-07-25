@@ -6,19 +6,14 @@
             <div class="card w-100">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <div>
-                        {{ $category->name }}
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <div class="px-2">
-                         Lista post
-                        </div>
+                        Lista post: {{ $category->name }}
                     </div>
                 </div>
 
                 <div class="card-body">
                     <ul>
-                        @foreach ($category->posts as $posts)
-                        <li><a href="{{route('admin.posts.show', $post->slug)}}">{{$posts->title}}</a></li>
+                        @foreach ($category->posts as $post)
+                        <li><a href="{{route('admin.posts.show', $post->slug)}}">{{$post->title}}</a></li>
 
                         @endforeach
                     </ul>
